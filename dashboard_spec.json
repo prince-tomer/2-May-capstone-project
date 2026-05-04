@@ -1,0 +1,97 @@
+{
+  "dax_measures": {
+    "Total Sales": "\nTotal Sales =\n    SUMX(\n        Sales,\n        Sales[price] * Sales[quantity]\n    )",
+    "Average Order Value": "\nAverage Order Value =\n    DIVIDE(\n        [Total Sales],\n        DISTINCTCOUNT(Sales[transaction_id]),\n        0\n    )",
+    "Sales Growth %": "\nSales Growth % =\n    VAR ThisMonth =\n        CALCULATE([Total Sales], DATESMTD(Sales[timestamp]))\n    VAR LastMonth =\n        CALCULATE([Total Sales], DATEADD(DATESMTD(Sales[timestamp]), -1, MONTH))\n    RETURN\n        DIVIDE(ThisMonth - LastMonth, LastMonth, 0)",
+    "Top Category": "\nTop Category =\n    CALCULATE(\n        FIRSTNONBLANK(Product[category], 1),\n        TOPN(\n            1,\n            SUMMARIZE(Sales, Product[category], \"rev\", [Total Sales]),\n            [rev],\n            DESC\n        )\n    )",
+    "Customer Count": "\nCustomer Count =\n    DISTINCTCOUNT(Sales[customer_id])",
+    "Revenue by Segment": "\nRevenue by Segment =\n    CALCULATE(\n        [Total Sales],\n        ALLEXCEPT(Customer, Customer[segment])\n    )"
+  },
+  "dashboard_pages": [
+    {
+      "page": "Executive Overview",
+      "visuals": [
+        {
+          "type": "KPI Card",
+          "measure": "Total Sales"
+        },
+        {
+          "type": "KPI Card",
+          "measure": "Average Order Value"
+        },
+        {
+          "type": "KPI Card",
+          "measure": "Sales Growth %"
+        },
+        {
+          "type": "KPI Card",
+          "measure": "Customer Count"
+        }
+      ]
+    },
+    {
+      "page": "Sales by Geography",
+      "visuals": [
+        {
+          "type": "Filled Map",
+          "location": "Customer[city]",
+          "value": "Total Sales"
+        },
+        {
+          "type": "Bar Chart",
+          "axis": "Customer[city]",
+          "value": "Total Sales"
+        }
+      ]
+    },
+    {
+      "page": "Sales Trend",
+      "visuals": [
+        {
+          "type": "Line Chart",
+          "axis": "Sales[timestamp] (Month)",
+          "value": "Total Sales"
+        },
+        {
+          "type": "Area Chart",
+          "axis": "Sales[timestamp] (Month)",
+          "value": "Sales Growth %"
+        }
+      ]
+    },
+    {
+      "page": "Top Products",
+      "visuals": [
+        {
+          "type": "Bar Chart",
+          "axis": "Product[brand]",
+          "value": "Total Sales"
+        },
+        {
+          "type": "Treemap",
+          "group": "Product[category]",
+          "value": "Total Sales"
+        }
+      ]
+    },
+    {
+      "page": "Customer Segmentation",
+      "visuals": [
+        {
+          "type": "Donut Chart",
+          "legend": "Customer[segment]",
+          "value": "Total Sales"
+        },
+        {
+          "type": "Table",
+          "columns": [
+            "Customer[segment]",
+            "Total Sales",
+            "Average Order Value",
+            "Customer Count"
+          ]
+        }
+      ]
+    }
+  ]
+}

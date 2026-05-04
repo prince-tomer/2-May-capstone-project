@@ -1,0 +1,51 @@
+{
+  "model_name": "RetailX_StarSchema",
+  "description": "Star schema for RetailX. Sales is the fact table. Customer and Product are dimension tables. In Fabric, connect Power BI to the Gold Lakehouse via the SQL Analytics Endpoint.",
+  "fact_table": {
+    "name": "Sales",
+    "lakehouse_path": "lakehouse/gold/",
+    "columns": [
+      "transaction_id",
+      "customer_id",
+      "product_id",
+      "store_id",
+      "quantity",
+      "price",
+      "revenue",
+      "timestamp"
+    ]
+  },
+  "dimension_tables": [
+    {
+      "name": "Customer",
+      "lakehouse_path": "lakehouse/silver/customers",
+      "columns": [
+        "customer_id",
+        "name",
+        "city",
+        "segment"
+      ],
+      "relationship": {
+        "from_col": "Sales[customer_id]",
+        "to_col": "Customer[customer_id]",
+        "cardinality": "Many-to-One",
+        "cross_filter": "Single"
+      }
+    },
+    {
+      "name": "Product",
+      "lakehouse_path": "lakehouse/silver/products",
+      "columns": [
+        "product_id",
+        "category",
+        "brand"
+      ],
+      "relationship": {
+        "from_col": "Sales[product_id]",
+        "to_col": "Product[product_id]",
+        "cardinality": "Many-to-One",
+        "cross_filter": "Single"
+      }
+    }
+  ]
+}

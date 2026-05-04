@@ -1,0 +1,16 @@
+# Core — Spark runs on the JVM, pyspark is the Python binding
+pyspark==3.5.1
+
+# Needed by Spark for reading/writing Parquet files
+pyarrow==16.0.0
+
+# Optional but useful for local data exploration and quick checks
+pandas==2.2.2
+
+# Notebook support if you want to run this interactively
+jupyter==1.0.0
+ipykernel==6.29.4
+
+# Code quality
+flake8==7.0.0
+black==24.4.2
